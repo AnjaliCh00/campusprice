@@ -1,85 +1,119 @@
 "use client";
 
 import React, { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+import Image from "next/image";
 
-const Contact = () => {
-  const [formData, setFormData] = useState({ name: "", email: "", message: "" });
+const CourseSection = () => {
+  const items = [
+    {
+      title: "Course Overview",
+      content: (
+        <p className="text-gray-300">
+          This course covers everything from basics to advanced topics, helping you build real-world projects and gain practical experience.
+        </p>
+      ),
+    },
+    {
+      title: "Modules Included",
+      content: (
+        <ul className="list-disc list-inside text-gray-300 space-y-1">
+          <li>Module 1: Introduction</li>
+          <li>Module 2: Frontend Development</li>
+          <li>Module 3: Backend Development</li>
+          <li>Module 4: Full Stack Projects</li>
+        </ul>
+      ),
+    },
+    {
+      title: "Tools & Technologies",
+      content: (
+        <p className="text-gray-300">
+          You will learn React, Next.js, Node.js, Tailwind CSS, and more modern web development tools.
+        </p>
+      ),
+    },
+    {
+      title: "Projects",
+      content: (
+        <ul className="list-disc list-inside text-gray-300 space-y-1">
+          <li>Portfolio Website</li>
+          <li>E-commerce Web App</li>
+          <li>Blog Platform</li>
+        </ul>
+      ),
+    },
+  ];
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+  const [openIndex, setOpenIndex] = useState<number | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Here you can handle form submission (e.g., send to API)
-    console.log(formData);
-    alert("Message sent!");
-    setFormData({ name: "", email: "", message: "" });
+  const toggleAccordion = (index: number) => {
+    setOpenIndex(openIndex === index ? null : index);
   };
 
   return (
-    <div className="min-h-screen bg-slate-900 text-white px-6 lg:px-20 py-24">
-      {/* Heading */}
-      <section className="text-center mb-16">
-        <h1 className="text-5xl font-bold mb-4">Contact Us</h1>
-        <p className="text-gray-300 max-w-2xl mx-auto">
-          We'd love to hear from you! Fill out the form below and we'll get back to you as soon as possible.
-        </p>
-      </section>
+    <section className="bg-slate-900 text-white">
+      {/* Text + Image Section */}
+      <div className="py-24 px-6 lg:px-20">
+        <div className="container mx-auto flex flex-col lg:flex-row items-center gap-12">
+          {/* Text Side */}
+          <div className="lg:w-1/2 text-center lg:text-left">
+            <h2 className="text-4xl font-bold mb-4">Your Heading Here</h2>
+            <p className="text-gray-300 mb-6">
+              Your paragraph text goes here. You can describe the content, share details, or explain features of your product or service. This section is perfect for marketing or informational content.
+            </p>
+            <a
+              href="#"
+              className="bg-blue-500 hover:bg-blue-600 px-6 py-3 rounded-lg font-semibold transition"
+            >
+              Learn More
+            </a>
+          </div>
 
-      {/* Contact Form & Info */}
-      <div className="grid lg:grid-cols-2 gap-16 max-w-6xl mx-auto">
-        {/* Form */}
-        <form onSubmit={handleSubmit} className="bg-slate-800 p-8 rounded-2xl shadow-lg flex flex-col gap-6">
-          <Input
-            type="text"
-            name="name"
-            placeholder="Your Name"
-            value={formData.name}
-            onChange={handleChange}
-            className="bg-slate-700 text-white border-none"
-            required
-          />
-          <Input
-            type="email"
-            name="email"
-            placeholder="Your Email"
-            value={formData.email}
-            onChange={handleChange}
-            className="bg-slate-700 text-white border-none"
-            required
-          />
-          <Textarea
-            name="message"
-            placeholder="Your Message"
-            value={formData.message}
-            onChange={handleChange}
-            className="bg-slate-700 text-white border-none h-32 resize-none"
-            required
-          />
-          <Button type="submit" className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold">
-            Send Message
-          </Button>
-        </form>
-
-        {/* Contact Info */}
-        <div className="flex flex-col justify-center gap-6 text-center lg:text-left">
-          <h2 className="text-3xl font-bold">Get in Touch</h2>
-          <p className="text-gray-300">
-            Email us, call us, or visit our office. We're always happy to answer your questions.
-          </p>
-          <div className="space-y-2">
-            <p>Email: <span className="text-blue-400">support@yourwebsite.com</span></p>
-            <p>Phone: <span className="text-blue-400">+91 123 456 7890</span></p>
-            <p>Address: <span className="text-blue-400">123 Learning St, Education City, India</span></p>
+          {/* Image Side */}
+          <div className="lg:w-1/2 relative w-full h-64 lg:h-96">
+            <Image
+              src="/images/6aaad0b918d53721ff8f7ac7538cefbc9fde7279.png"
+              alt="Info Image"
+              fill
+              className="object-cover rounded-xl shadow-lg"
+            />
           </div>
         </div>
       </div>
-    </div>
+
+      {/* Accordion Section */}
+      <div className="py-20 px-6 lg:px-20">
+        <div className="max-w-3xl mx-auto text-center mb-12">
+          <h2 className="text-4xl font-bold mb-4">Course Details</h2>
+          <p className="text-gray-300">
+            Expand each section to learn more about this course.
+          </p>
+        </div>
+
+        <div className="max-w-3xl mx-auto space-y-4">
+          {items.map((item, index) => (
+            <div
+              key={index}
+              className="bg-slate-800 rounded-xl overflow-hidden shadow-lg"
+            >
+              <button
+                onClick={() => toggleAccordion(index)}
+                className="w-full flex justify-between items-center px-6 py-4 text-left focus:outline-none"
+              >
+                <span className="font-semibold text-lg">{item.title}</span>
+                <span className="text-2xl">{openIndex === index ? "<  " : ">"}</span>
+              </button>
+              {openIndex === index && (
+                <div className="px-6 py-4 border-t border-slate-700">
+                  {item.content}
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
   );
 };
 
-export default Contact;
+export default CourseSection;
