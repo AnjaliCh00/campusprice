@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import Image from "next/image";
+
 
 const About = () => {
   return (
@@ -14,7 +14,7 @@ const About = () => {
         </p>
       </section>
 
-      {/* Image + Text Section */}
+      {/* Text Section */}
       <section className="py-20 px-6 lg:px-20">
         <div className="container mx-auto flex flex-col lg:flex-row items-center gap-12">
           

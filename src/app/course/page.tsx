@@ -8,37 +8,37 @@ const courses = [
   {
     title: "Full Stack Web Development",
     desc: "Build complete web apps using React, Next.js, and Node.js.",
-    img: "/images/fullstack.jpg",
+    img: "/images/6aaad0b918d53721ff8f7ac7538cefbc9fde7279.png",
     link: "/pricing/fullstack",
   },
   {
     title: "UI/UX Design Masterclass",
     desc: "Design user-friendly and visually stunning digital experiences.",
-    img: "/images/uiux.jpg",
+    img: "/images/6aaad0b918d53721ff8f7ac7538cefbc9fde7279.png",
     link: "/pricing/uiux",
   },
   {
     title: "Data Science & Machine Learning",
     desc: "Analyze data, train models, and deploy AI-powered solutions.",
-    img: "/images/datascience.jpg",
+    img: "/images/6aaad0b918d53721ff8f7ac7538cefbc9fde7279.png",
     link: "/pricing/datascience",
   },
   {
     title: "Python Programming Bootcamp",
     desc: "Learn Python from scratch — the world’s most popular programming language.",
-    img: "/images/python.jpg",
+    img: "/images/6aaad0b918d53721ff8f7ac7538cefbc9fde7279.png",
     link: "/pricing/python",
   },
   {
     title: "Digital Marketing Pro",
     desc: "Master SEO, Google Ads, and social media marketing to grow online businesses.",
-    img: "/images/digitalmarketing.jpg",
+    img: "/images/6aaad0b918d53721ff8f7ac7538cefbc9fde7279.png",
     link: "/pricing/digital-marketing",
   },
   {
     title: "Mobile App Development",
     desc: "Create cross-platform mobile apps using Flutter and React Native.",
-    img: "/images/mobiledev.jpg",
+    img: "/images/6aaad0b918d53721ff8f7ac7538cefbc9fde7279.png",
     link: "/pricing/mobile-app",
   },
   
