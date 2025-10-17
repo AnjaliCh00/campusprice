@@ -2,7 +2,7 @@
 
 import React from "react";
 import Image from "next/image";
-import { Button } from "@/components/ui/button"; // ✅ make sure this path matches your project
+import { Button } from "@/components/ui/button"; 
 
 const courses = [
   {
@@ -41,9 +41,7 @@ const courses = [
     img: "/images/6aaad0b918d53721ff8f7ac7538cefbc9fde7279.png",
     link: "/pricing/mobile-app",
   },
-  
 ];
-
 
 const Course = () => {
   return (
@@ -52,9 +50,15 @@ const Course = () => {
       <div className="min-h-screen flex items-center justify-center bg-slate-900">
         <section className="py-16 text-white w-full">
           <div className="container mx-auto px-6 lg:px-20 text-center">
-            <h2 className="text-4xl font-bold mb-6">Your Heading Here</h2>
-            <p className="text-lg max-w-2xl mx-auto">
-              Your paragraph text goes here. You can write anything you want to display in this section.
+            <h2
+              className="text-8xl mb-6"
+              style={{ fontFamily: "NeueMachina", fontWeight: 300 }}
+            >
+              Your Heading Here
+            </h2>
+            <p className="text-3xl max-w-2xl mx-auto text-gray-300">
+              Your paragraph text goes here. You can write anything you want to
+              display in this section.
             </p>
           </div>
         </section>
@@ -63,7 +67,10 @@ const Course = () => {
       {/* Cards Section */}
       <section className="py-20 bg-slate-900 text-white">
         <div className="container mx-auto px-6 lg:px-20">
-          <h2 className="text-4xl font-bold text-center mb-12">
+          <h2
+            className="text-8xl text-center mb-12"
+            style={{ fontFamily: "NeueMachina", fontWeight: 300 }}
+          >
             Explore Our <span className="text-blue-400">Courses</span>
           </h2>
 
@@ -86,7 +93,12 @@ const Course = () => {
                 {/* Content */}
                 <div className="p-6 flex flex-col justify-between flex-grow">
                   <div>
-                    <h3 className="text-2xl font-semibold mb-3">{course.title}</h3>
+                    <h3
+                      className="text-2xl mb-3"
+                      style={{ fontFamily: "NeueMachina", fontWeight: 300 }}
+                    >
+                      {course.title}
+                    </h3>
                     <p className="text-gray-400 text-sm">{course.desc}</p>
                   </div>
                 </div>
@@ -110,3 +122,4 @@ const Course = () => {
 };
 
 export default Course;
+``

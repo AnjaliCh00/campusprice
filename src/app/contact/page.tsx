@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import Image from "next/image";
+import { ChevronDown, ChevronUp } from "lucide-react";
 
 const CourseSection = () => {
   const items = [
@@ -9,7 +10,8 @@ const CourseSection = () => {
       title: "Course Overview",
       content: (
         <p className="text-gray-300">
-          This course covers everything from basics to advanced topics, helping you build real-world projects and gain practical experience.
+          This course covers everything from basics to advanced topics, helping
+          you build real-world projects and gain practical experience.
         </p>
       ),
     },
@@ -28,7 +30,8 @@ const CourseSection = () => {
       title: "Tools & Technologies",
       content: (
         <p className="text-gray-300">
-          You will learn React, Next.js, Node.js, Tailwind CSS, and more modern web development tools.
+          You will learn React, Next.js, Node.js, Tailwind CSS, and more modern
+          web development tools.
         </p>
       ),
     },
@@ -57,12 +60,19 @@ const CourseSection = () => {
         <div className="container mx-auto flex flex-col lg:flex-row items-center gap-12">
           {/* Text Side */}
           <div className="lg:w-1/2 text-center lg:text-left">
-            <h2 className="text-4xl font-bold mb-4">Your Heading Here</h2>
+            <h2
+              className="text-4xl mb-4"
+              style={{ fontFamily: "NeueMachina", fontWeight: 300 }}
+            >
+              Your Heading Here
+            </h2>
             <p className="text-gray-300 mb-6">
-              Your paragraph text goes here. You can describe the content, share details, or explain features of your product or service. This section is perfect for marketing or informational content.
+              Your paragraph text goes here. You can describe the content, share
+              details, or explain features of your product or service. This
+              section is perfect for marketing or informational content.
             </p>
             <a
-              href="#"
+              href="/course"
               className="bg-blue-500 hover:bg-blue-600 px-6 py-3 rounded-lg font-semibold transition"
             >
               Learn More
@@ -84,7 +94,12 @@ const CourseSection = () => {
       {/* Accordion Section */}
       <div className="py-20 px-6 lg:px-20">
         <div className="max-w-3xl mx-auto text-center mb-12">
-          <h2 className="text-4xl font-bold mb-4">Course Details</h2>
+          <h2
+            className="text-4xl mb-4"
+            style={{ fontFamily: "NeueMachina", fontWeight: 300 }}
+          >
+            Course Details
+          </h2>
           <p className="text-gray-300">
             Expand each section to learn more about this course.
           </p>
@@ -101,7 +116,16 @@ const CourseSection = () => {
                 className="w-full flex justify-between items-center px-6 py-4 text-left focus:outline-none"
               >
                 <span className="font-semibold text-lg">{item.title}</span>
-                <span className="text-2xl">{openIndex === index ? "<  " : ">"}</span>
+                <span
+                  className="flex items-center gap-2 text-xl font-semibold text-blue-500"
+                  style={{ fontFamily: "NeueMachina" }}
+                >
+                  {openIndex === index ? (
+                    <ChevronUp className="w-5 h-5" />
+                  ) : (
+                    <ChevronDown className="w-5 h-5" />
+                  )}
+                </span>
               </button>
               {openIndex === index && (
                 <div className="px-6 py-4 border-t border-slate-700">

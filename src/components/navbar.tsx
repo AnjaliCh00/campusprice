@@ -1,68 +1,97 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { useState } from "react";
-import { Menu, X } from "lucide-react";
+import { Menu, X } from "lucide-react"; 
 
 const Navbar = () => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [showNavbar, setShowNavbar] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
+  const [menuOpen, setMenuOpen] = useState(false);
 
-  const toggleMenu = () => setIsOpen(!isOpen);
+  const controlNavbar = () => {
+    if (typeof window !== "undefined") {
+      const currentScrollY = window.scrollY;
+
+      if (currentScrollY > lastScrollY && currentScrollY > 100) {
+        setShowNavbar(false);
+      } else {
+        setShowNavbar(true);
+      }
+
+      setLastScrollY(currentScrollY);
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener("scroll", controlNavbar);
+    return () => window.removeEventListener("scroll", controlNavbar);
+  }, [lastScrollY]);
 
   return (
-    <nav className="bg-slate-900 text-white shadow-lg fixed w-full z-50 top-0">
-      <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-        {/* Logo */}
-        <Link href="/" className="text-2xl font-bold tracking-wide">
-          Campusdice.ai
-        </Link>
+    <nav
+      className={`fixed top-0 w-full z-50 transition-transform duration-300 ${
+        showNavbar ? "translate-y-0" : "-translate-y-full"
+      }`}
+      style={{
+        background: "black", 
+        backdropFilter: "blur(10px)",
+      }}
+    >
+      <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center leading-tight">
+        <div className="text-white font-bold text-xl">campusdice.ai</div>
 
         {/* Desktop Menu */}
-        <div className="hidden md:flex space-x-8 text-lg">
-          <Link href="/" className="hover:text-blue-400 transition">
-            Home
-          </Link>
-        
-          <Link href="/course" className="hover:text-blue-400 transition">
-            Course
-          </Link>
-          <Link href="/about" className="hover:text-blue-400 transition">
-            About
-          </Link>
-          <Link href="/contact" className="hover:text-blue-400 transition">
-            Contact
-          </Link>
-        </div>
+        <ul className="hidden md:flex space-x-6 text-white lading-tight">
+          <li>
+            <Link href="/">Home</Link>
+          </li>
+          <li>
+            <Link href="/about">About</Link>
+          </li>
+          <li>
+            <Link href="/course">Services</Link>
+          </li>
+          <li>
+            <Link href="/contact">Contact</Link>
+          </li>
+        </ul>
 
         {/* Mobile Menu Button */}
-        <button
-          onClick={toggleMenu}
-          className="md:hidden focus:outline-none"
-          aria-label="Toggle Menu"
-        >
-          {isOpen ? <X size={28} /> : <Menu size={28} />}
-        </button>
+        <div className="md:hidden">
+          <button
+            onClick={() => setMenuOpen(!menuOpen)}
+            className="text-white focus:outline-none"
+          >
+            {menuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
+        </div>
       </div>
 
       {/* Mobile Menu */}
-      {isOpen && (
-        <div className="md:hidden bg-slate-800 border-t border-slate-700">
-          <div className="flex flex-col space-y-4 px-6 py-4">
-            <Link href="/" className="hover:text-blue-400" onClick={toggleMenu}>
+      {menuOpen && (
+        <ul className="md:hidden bg-black/70 backdrop-blur-lg flex flex-col space-y-4 px-6 py-4 text-white">
+          <li>
+            <Link href="/" onClick={() => setMenuOpen(false)}>
               Home
             </Link>
-           
-            <Link href="/course" className="hover:text-blue-400" onClick={toggleMenu}>
-              Course
-            </Link>
-            <Link href="/about" className="hover:text-blue-400" onClick={toggleMenu}>
+          </li>
+          <li>
+            <Link href="/about" onClick={() => setMenuOpen(false)}>
               About
             </Link>
-            <Link href="/contact" className="hover:text-blue-400" onClick={toggleMenu}>
+          </li>
+          <li>
+            <Link href="/course" onClick={() => setMenuOpen(false)}>
+              Services
+            </Link>
+          </li>
+          <li>
+            <Link href="/contact" onClick={() => setMenuOpen(false)}>
               Contact
             </Link>
-          </div>
-        </div>
+          </li>
+        </ul>
       )}
     </nav>
   );
