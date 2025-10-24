@@ -55,6 +55,16 @@ const Navbar = () => {
           <li>
             <Link href="/contact">Contact</Link>
           </li>
+          <li>
+           <Link href="/login" onClick={() => setMenuOpen(false)}>
+              login
+            </Link>
+            </li>
+            <li>
+           <Link href="/signup" onClick={() => setMenuOpen(false)}>
+              sign up
+            </Link>
+            </li>
         </ul>
 
         {/* Mobile Menu Button */}
@@ -89,6 +99,12 @@ const Navbar = () => {
           <li>
             <Link href="/contact" onClick={() => setMenuOpen(false)}>
               Contact
+            </Link>
+             <Link href="/login" onClick={() => setMenuOpen(false)}>
+              login
+            </Link>
+            <Link href="/signup" onClick={() => setMenuOpen(false)}>
+              ign up
             </Link>
           </li>
         </ul>
