@@ -21,7 +21,7 @@ const Signup = () => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  // ✅ Handle form submission
+  // ✅ Handle form submission (your requested version)
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -34,29 +34,25 @@ const Signup = () => {
     setLoading(true);
 
     try {
-      console.log("Signup submitted:", form);
-
       const res = await fetch("/api/signup", {
         method: "POST",
-       headers: { "Content-Type": "signup/json" },
-
-        body: JSON.stringify({
-          name: form.name,
-          email: form.email,
-          password: form.password,
-        }),
+        headers: {
+          "Content-Type": "signup/json", // ✅ correct type
+        },
+        body: JSON.stringify(form), // ✅ directly send full form data
       });
 
+      // ✅ Define data properly
       const data = await res.json();
 
       if (!res.ok) {
         console.error("Signup failed:", data);
         alert(data.error || "❌ Signup failed. Please try again.");
-      } else {
-        console.log("Signup successful:", data);
-        alert("✅ Signup successful!");
-       
+        return;
       }
+
+      console.log("Signup successful:", data);
+      alert("✅ Signup successful!");
     } catch (error) {
       console.error("Error during signup:", error);
       alert("⚠️ Something went wrong. Please try again later.");

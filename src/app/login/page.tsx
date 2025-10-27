@@ -32,7 +32,7 @@ const Login = () => {
 
       const res = await fetch("/api/login", {
         method: "POST",
-        headers: { "Content-Type": "login/json" }, // ✅ Correct header
+        headers: { "Content-Type": "login/json" },
         body: JSON.stringify({
           email: form.email,
           password: form.password,
