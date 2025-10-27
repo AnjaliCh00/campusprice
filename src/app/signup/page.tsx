@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import toast, { Toaster } from "react-hot-toast"; 
 
 const Signup = () => {
   const [form, setForm] = useState({
@@ -21,13 +22,13 @@ const Signup = () => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  // ✅ Handle form submission (your requested version)
+  // ✅ Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Basic validation
     if (form.password !== form.confirmPassword) {
-      alert("⚠️ Passwords do not match!");
+      toast.error("⚠️ Passwords do not match!");
+      
       return;
     }
 
@@ -37,125 +38,150 @@ const Signup = () => {
       const res = await fetch("/api/signup", {
         method: "POST",
         headers: {
-          "Content-Type": "signup/json", // ✅ correct type
+          "Content-Type": "signup/json", // ✅ correct header
         },
-        body: JSON.stringify(form), // ✅ directly send full form data
+        body: JSON.stringify(form),
       });
 
-      // ✅ Define data properly
       const data = await res.json();
 
       if (!res.ok) {
         console.error("Signup failed:", data);
-        alert(data.error || "❌ Signup failed. Please try again.");
+        toast.error(data.error || "❌ Signup failed. Please try again.");
         return;
       }
 
       console.log("Signup successful:", data);
-      alert("✅ Signup successful!");
+      toast.success("✅ Signup successful!");
     } catch (error) {
       console.error("Error during signup:", error);
-      alert("⚠️ Something went wrong. Please try again later.");
+      toast.error("⚠️ Something went wrong. Please try again later.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <section className="min-h-screen flex items-center justify-center bg-slate-900 px-6 py-20">
-      <div className="bg-slate-800 shadow-2xl rounded-2xl p-8 w-full max-w-md border border-slate-700">
-        {/* Heading */}
-        <h2 className="text-3xl font-bold text-white text-center mb-6 font-[Poppins]">
-          Create an Account
-        </h2>
-        <p className="text-gray-400 text-center mb-8">
-          Join us and start your journey today
-        </p>
+    <>
+      {/* ✅ Toast container — handles showing popups */}
+      <Toaster
+        position="top-center"
+        reverseOrder={false}
+        toastOptions={{
+          style: {
+            background: "#1e293b", // slate-800
+            color: "#fff",
+            border: "1px solid #334155", // subtle border
+            padding: "12px 16px",
+            borderRadius: "10px",
+          },
+          success: {
+            iconTheme: {
+              primary: "#22c55e", // green-500
+              secondary: "#fff",
+            },
+          },
+          error: {
+            iconTheme: {
+              primary: "#ef4444", // red-500
+              secondary: "#fff",
+            },
+          },
+        }}
+      />
 
-        {/* Form */}
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div>
-            <Label htmlFor="name" className="text-gray-300">
-              Full Name
-            </Label>
-            <Input
-              id="name"
-              name="name"
-              type="text"
-              placeholder="Your full name"
-              value={form.name}
-              onChange={handleChange}
-              className="bg-slate-700 border-slate-600 text-white placeholder-gray-400"
-              required
-            />
-          </div>
+      <section className="min-h-screen flex items-center justify-center bg-slate-900 px-6 py-20">
+        <div className="bg-slate-800 shadow-2xl rounded-2xl p-8 w-full max-w-md border border-slate-700">
+          <h2 className="text-3xl font-bold text-white text-center mb-6 font-[Poppins]">
+            Create an Account
+          </h2>
+          <p className="text-gray-400 text-center mb-8">
+            Join us and start your journey today
+          </p>
 
-          <div>
-            <Label htmlFor="email" className="text-gray-300">
-              Email Address
-            </Label>
-            <Input
-              id="email"
-              name="email"
-              type="email"
-              placeholder="example@email.com"
-              value={form.email}
-              onChange={handleChange}
-              className="bg-slate-700 border-slate-600 text-white placeholder-gray-400"
-              required
-            />
-          </div>
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div>
+              <Label htmlFor="name" className="text-gray-300">
+                Full Name
+              </Label>
+              <Input
+                id="name"
+                name="name"
+                type="text"
+                placeholder="Your full name"
+                value={form.name}
+                onChange={handleChange}
+                className="bg-slate-700 border-slate-600 text-white placeholder-gray-400"
+                required
+              />
+            </div>
 
-          <div>
-            <Label htmlFor="password" className="text-gray-300">
-              Password
-            </Label>
-            <Input
-              id="password"
-              name="password"
-              type="password"
-              placeholder="••••••••"
-              value={form.password}
-              onChange={handleChange}
-              className="bg-slate-700 border-slate-600 text-white placeholder-gray-400"
-              required
-            />
-          </div>
+            <div>
+              <Label htmlFor="email" className="text-gray-300">
+                Email Address
+              </Label>
+              <Input
+                id="email"
+                name="email"
+                type="email"
+                placeholder="example@email.com"
+                value={form.email}
+                onChange={handleChange}
+                className="bg-slate-700 border-slate-600 text-white placeholder-gray-400"
+                required
+              />
+            </div>
 
-          <div>
-            <Label htmlFor="confirmPassword" className="text-gray-300">
-              Confirm Password
-            </Label>
-            <Input
-              id="confirmPassword"
-              name="confirmPassword"
-              type="password"
-              placeholder="••••••••"
-              value={form.confirmPassword}
-              onChange={handleChange}
-              className="bg-slate-700 border-slate-600 text-white placeholder-gray-400"
-              required
-            />
-          </div>
+            <div>
+              <Label htmlFor="password" className="text-gray-300">
+                Password
+              </Label>
+              <Input
+                id="password"
+                name="password"
+                type="password"
+                placeholder="••••••••"
+                value={form.password}
+                onChange={handleChange}
+                className="bg-slate-700 border-slate-600 text-white placeholder-gray-400"
+                required
+              />
+            </div>
 
-          <Button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg"
-          >
-            {loading ? "Creating Account..." : "Sign Up"}
-          </Button>
-        </form>
+            <div>
+              <Label htmlFor="confirmPassword" className="text-gray-300">
+                Confirm Password
+              </Label>
+              <Input
+                id="confirmPassword"
+                name="confirmPassword"
+                type="password"
+                placeholder="••••••••"
+                value={form.confirmPassword}
+                onChange={handleChange}
+                className="bg-slate-700 border-slate-600 text-white placeholder-gray-400"
+                required
+              />
+            </div>
 
-        {/* Login Link */}
-        <p className="text-gray-400 text-center mt-6">
-          Already have an account?{" "}
-          <Link href="/login" className="text-blue-400 hover:underline">
-            Log in
-          </Link>
-        </p>
-      </div>
-    </section>
+            <Button
+              type="submit"
+              disabled={loading}
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg"
+            >
+              {loading ? "Creating Account..." : "Sign Up"}
+            </Button>
+          </form>
+
+          <p className="text-gray-400 text-center mt-6">
+            Already have an account?{" "}
+            <Link href="/login" className="text-blue-400 hover:underline">
+              Log in
+            </Link>
+          </p>
+        </div>
+      </section>
+    </>
   );
 };
 
