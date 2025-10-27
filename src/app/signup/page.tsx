@@ -5,74 +5,70 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { PrismaClient } from "@prisma/client";
-import bcrypt from "bcryptjs";
 
-const prisma = new PrismaClient(); // PrismaClient instance
-
-const SignupPage = () => {
+const Signup = () => {
   const [form, setForm] = useState({
+    name: "",
     email: "",
     password: "",
     confirmPassword: "",
   });
 
+  const [loading, setLoading] = useState(false);
+
+  // ✅ Handle input changes
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  // "Inline API" function
-  const handleSignup = async () => {
-    if (!form.email || !form.password) {
-      alert("Email and password are required");
+  // ✅ Handle form submission
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    // Basic validation
+    if (form.password !== form.confirmPassword) {
+      alert("⚠️ Passwords do not match!");
       return;
     }
 
-    if (form.password !== form.confirmPassword) {
-      alert("Passwords do not match");
-      return;
-    }
+    setLoading(true);
 
     try {
-      // Check if user exists
-      const existingUser = await prisma.data.findUnique({
-        where: { email: form.email },
-      });
+      console.log("Signup submitted:", form);
 
-      if (existingUser) {
-        alert("User already exists");
-        return;
-      }
+      const res = await fetch("/api/signup", {
+        method: "POST",
+       headers: { "Content-Type": "signup/json" },
 
-      // Hash password
-      const hashedPassword = await bcrypt.hash(form.password, 10);
-
-      // Create user
-      const newUser = await prisma.data.create({
-        data: {
+        body: JSON.stringify({
+          name: form.name,
           email: form.email,
-          password: hashedPassword,
-        },
+          password: form.password,
+        }),
       });
 
-      alert("Signup successful! Please log in.");
-      console.log(newUser);
-    } catch (error) {
-      console.error(error);
-      alert("Something went wrong");
-    } finally {
-      await prisma.$disconnect();
-    }
-  };
+      const data = await res.json();
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    handleSignup();
+      if (!res.ok) {
+        console.error("Signup failed:", data);
+        alert(data.error || "❌ Signup failed. Please try again.");
+      } else {
+        console.log("Signup successful:", data);
+        alert("✅ Signup successful!");
+       
+      }
+    } catch (error) {
+      console.error("Error during signup:", error);
+      alert("⚠️ Something went wrong. Please try again later.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <section className="min-h-screen flex items-center justify-center bg-slate-900 px-6 py-20">
       <div className="bg-slate-800 shadow-2xl rounded-2xl p-8 w-full max-w-md border border-slate-700">
+        {/* Heading */}
         <h2 className="text-3xl font-bold text-white text-center mb-6 font-[Poppins]">
           Create an Account
         </h2>
@@ -80,7 +76,24 @@ const SignupPage = () => {
           Join us and start your journey today
         </p>
 
+        {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-6">
+          <div>
+            <Label htmlFor="name" className="text-gray-300">
+              Full Name
+            </Label>
+            <Input
+              id="name"
+              name="name"
+              type="text"
+              placeholder="Your full name"
+              value={form.name}
+              onChange={handleChange}
+              className="bg-slate-700 border-slate-600 text-white placeholder-gray-400"
+              required
+            />
+          </div>
+
           <div>
             <Label htmlFor="email" className="text-gray-300">
               Email Address
@@ -131,12 +144,14 @@ const SignupPage = () => {
 
           <Button
             type="submit"
+            disabled={loading}
             className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg"
           >
-            Sign Up
+            {loading ? "Creating Account..." : "Sign Up"}
           </Button>
         </form>
 
+        {/* Login Link */}
         <p className="text-gray-400 text-center mt-6">
           Already have an account?{" "}
           <Link href="/login" className="text-blue-400 hover:underline">
@@ -148,4 +163,4 @@ const SignupPage = () => {
   );
 };
 
-export default SignupPage;
+export default Signup;

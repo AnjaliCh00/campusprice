@@ -3,26 +3,63 @@
 import React, { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
-const LoginPage = () => {
+const Login = () => {
   const [form, setForm] = useState({ email: "", password: "" });
+  const [loading, setLoading] = useState(false);
 
+  // ✅ Handle input changes
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // ✅ Handle form submission
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Login submitted:", form);
+
+    // Basic validation
+    if (!form.email || !form.password) {
+      alert("⚠️ Please fill in both email and password!");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      console.log("Login submitted:", form);
+
+      const res = await fetch("/api/login", {
+        method: "POST",
+        headers: { "Content-Type": "login/json" }, // ✅ Correct header
+        body: JSON.stringify({
+          email: form.email,
+          password: form.password,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        console.error("❌ Login failed:", data);
+        alert(data.error || "❌ Invalid email or password!");
+      } else {
+        console.log("✅ Login successful:", data);
+        alert("✅ Login successful! Welcome back!");
+        
+      }
+    } catch (error) {
+      console.error("⚠️ Error during login:", error);
+      alert("⚠️ Something went wrong. Please try again later.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <section className="min-h-screen flex items-center justify-center bg-slate-900 px-6 py-20">
       <div className="bg-slate-800 shadow-2xl rounded-2xl p-8 w-full max-w-md border border-slate-700">
-        {/* Heading */}
         <h2 className="text-3xl font-bold text-white text-center mb-6 font-[Poppins]">
           Welcome Back 👋
         </h2>
@@ -30,7 +67,6 @@ const LoginPage = () => {
           Log in to your account to continue
         </p>
 
-        {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <Label htmlFor="email" className="text-gray-300">
@@ -72,13 +108,13 @@ const LoginPage = () => {
 
           <Button
             type="submit"
+            disabled={loading}
             className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg"
           >
-            Log In
+            {loading ? "Logging in..." : "Log In"}
           </Button>
         </form>
 
-        {/* Signup Link */}
         <p className="text-gray-400 text-center mt-6">
           Don’t have an account?{" "}
           <Link href="/signup" className="text-blue-400 hover:underline">
@@ -90,4 +126,4 @@ const LoginPage = () => {
   );
 };
 
-export default LoginPage;
+export default Login;

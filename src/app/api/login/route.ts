@@ -1,13 +1,11 @@
 import { NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient } from "@/generated/prisma"; 
 import bcrypt from "bcryptjs";
 
-// Create Prisma instance
 const prisma = new PrismaClient();
 
 export async function POST(req: Request) {
   try {
-    // Parse request body
     const { email, password } = await req.json();
 
     if (!email || !password) {
@@ -17,11 +15,8 @@ export async function POST(req: Request) {
       );
     }
 
-    // Find user by email
-    const user = await prisma.data.findUnique({
-      where: { email },
-    });
-
+    // Check if user exists
+    const user = await prisma.user.findUnique({ where: { email } });
     if (!user) {
       return NextResponse.json(
         { error: "Invalid email or password" },
@@ -29,9 +24,8 @@ export async function POST(req: Request) {
       );
     }
 
-    // Compare password with hashed password
+    // Validate password
     const isPasswordValid = await bcrypt.compare(password, user.password);
-
     if (!isPasswordValid) {
       return NextResponse.json(
         { error: "Invalid email or password" },
@@ -39,23 +33,23 @@ export async function POST(req: Request) {
       );
     }
 
-    // ✅ Successful login
-    return NextResponse.json({
-      message: "Login successful",
-      user: {
-        id: user.id,
-        email: user.email,
+    // Exclude password before sending response
+    const { password: _, ...userWithoutPassword } = user;
+
+    return NextResponse.json(
+      {
+        message: "Login successful",
+        user: userWithoutPassword,
       },
-    });
+      { status: 200 }
+    );
   } catch (error) {
-    console.error("Login error:", error);
+    console.error("💥 Login error:", error);
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }
     );
   } finally {
-    // Close Prisma connection (optional in API routes, avoids connection leaks)
     await prisma.$disconnect();
   }
 }
- 
