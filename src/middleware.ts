@@ -4,32 +4,26 @@ import { verifyToken } from "@/utils/jwt";
 
 export async function middleware(request: NextRequest) {
   const token = request.cookies.get("token")?.value;
-  if (!token) {
-    return NextResponse.redirect(new URL("/login", request.url));
-  }
-  const payload = await verifyToken(token);
-  if (!payload) {
-    return NextResponse.redirect(new URL("/login", request.url));
-  }
-  // if already logged in and tries to access login or signup page, redirect to dashboard
-  if (
-    payload &&
-    (request.nextUrl.pathname.startsWith("/login") ||
-      request.nextUrl.pathname.startsWith("/signup"))
-  ) {
-    return NextResponse.redirect(new URL("/dashboard", request.url));
-  }
-
-  // if not logged in and tries to access dashboard page, redirect to login
-  if (!payload && request.nextUrl.pathname.startsWith("/dashboard")) {
-    return NextResponse.redirect(new URL("/login", request.url));
-  }
-
+  
+  // If user is on login/signup pages
   if (
     request.nextUrl.pathname.startsWith("/login") ||
     request.nextUrl.pathname.startsWith("/signup")
   ) {
+    // If they have a valid token, redirect to dashboard
+    if (token) {
+      const payload = await verifyToken(token);
+      if (payload) {
+        return NextResponse.redirect(new URL("/dashboard", request.url));
+      }
+    }
+    // If no token or invalid token, allow access to login/signup
     return NextResponse.next();
+  }
+  
+  // If user is on dashboard and no token, redirect to login
+  if (!token && request.nextUrl.pathname.startsWith("/dashboard")) {
+    return NextResponse.redirect(new URL("/login", request.url));
   }
 
   return NextResponse.next();
