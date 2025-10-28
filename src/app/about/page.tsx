@@ -1,9 +1,12 @@
 "use client";
 
 import React from "react";
+import Navbar from "@/components/navbar";
 
 const About = () => {
   return (
+    <>
+    <Navbar></Navbar>
     <div className="bg-slate-900 text-white min-h-screen">
       {/* Hero Section */}
       <section className="py-24 px-6 lg:px-20 text-center">
@@ -73,6 +76,7 @@ const About = () => {
         </a>
       </section>
     </div>
+    </>
   );
 };
 

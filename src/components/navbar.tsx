@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Menu, X } from "lucide-react"; 
+import { Menu, X } from "lucide-react";
 
 const Navbar = () => {
   const [showNavbar, setShowNavbar] = useState(true);
@@ -34,7 +34,7 @@ const Navbar = () => {
         showNavbar ? "translate-y-0" : "-translate-y-full"
       }`}
       style={{
-        background: "black", 
+        background: "black",
         backdropFilter: "blur(10px)",
       }}
     >
@@ -49,22 +49,20 @@ const Navbar = () => {
           <li>
             <Link href="/about">About</Link>
           </li>
-          <li>
-            <Link href="/course">Services</Link>
-          </li>
+
           <li>
             <Link href="/contact">Contact</Link>
           </li>
-          <li>
-           <Link href="/login" onClick={() => setMenuOpen(false)}>
+          {/* <li>
+            <Link href="/login" onClick={() => setMenuOpen(false)}>
               login
             </Link>
-            </li>
-            <li>
-           <Link href="/signup" onClick={() => setMenuOpen(false)}>
+          </li> */}
+          <li>
+            <Link href="/signup" onClick={() => setMenuOpen(false)}> 
               sign up
             </Link>
-            </li>
+          </li>
         </ul>
 
         {/* Mobile Menu Button */}
@@ -91,18 +89,14 @@ const Navbar = () => {
               About
             </Link>
           </li>
-          <li>
-            <Link href="/course" onClick={() => setMenuOpen(false)}>
-              Services
-            </Link>
-          </li>
+
           <li>
             <Link href="/contact" onClick={() => setMenuOpen(false)}>
               Contact
             </Link>
-             <Link href="/login" onClick={() => setMenuOpen(false)}>
+            {/* <Link href="/login" onClick={() => setMenuOpen(false)}>
               login
-            </Link>
+            </Link> */}
             <Link href="/signup" onClick={() => setMenuOpen(false)}>
               ign up
             </Link>

@@ -12,6 +12,7 @@ import {
   ChevronUp,
 } from "lucide-react";
 import Link from "next/link";
+import Navbar from "@/components/navbar";
 
 export default function LandingPage() {
   const features = [
@@ -121,6 +122,7 @@ export default function LandingPage() {
 
   return (
     <>
+    <Navbar></Navbar>
       <section className="bg-slate-900 min-h-screen flex flex-col md:flex-row items-start pt-16 mt-15">
         {/* Text Section */}
         <div className="container mx-auto px-6 md:px-12 lg:px-24 md:w-1/2 flex flex-col justify-start">

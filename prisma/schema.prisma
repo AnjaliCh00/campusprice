@@ -22,3 +22,16 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 }
+model Contact {
+  id        Int      @id @default(autoincrement())
+  name      String
+  phone     String
+  dob       DateTime
+  college   String
+  course    String
+  skills    String
+  message   String
+  createdAt DateTime @default(now())
+  updatedAT DateTime @default(now())  
+  
+}
