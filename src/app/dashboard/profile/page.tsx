@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import { Button } from "@/components/ui/button";
 
 const ProfilePage = () => {
@@ -37,7 +37,7 @@ const ProfilePage = () => {
   if (loading) {
     return (
       <section className="min-h-screen flex items-center justify-center bg-slate-900">
-        <Toaster position="top-center" />
+       
         <p className="text-gray-300">Loading profile...</p>
       </section>
     );
@@ -45,7 +45,6 @@ const ProfilePage = () => {
 
   return (
     <section className="min-h-screen flex items-center justify-center bg-slate-900 px-6 py-20">
-      <Toaster position="top-center" />
       <div className="bg-slate-800 p-8 rounded-2xl shadow-lg text-white w-full max-w-md border border-slate-700">
         <h2 className="text-3xl font-bold mb-6 text-center font-[Poppins]">
           👤 My Profile

@@ -3,7 +3,7 @@
 import { useState } from "react";
 import toast from "react-hot-toast";
 import Navbar from "@/components/navbar";
-import { Toaster } from "react-hot-toast";
+
 
 export default function ContactPage() {
   const [form, setForm] = useState({

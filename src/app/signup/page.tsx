@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import toast, { Toaster } from "react-hot-toast"; 
+import toast from "react-hot-toast"; 
 
 const Signup = () => {
   const [form, setForm] = useState({
@@ -64,31 +64,7 @@ const Signup = () => {
   return (
     <>
       {/* ✅ Toast container — handles showing popups */}
-      <Toaster
-        position="top-center"
-        reverseOrder={false}
-        toastOptions={{
-          style: {
-            background: "#1e293b", // slate-800
-            color: "#fff",
-            border: "1px solid #334155", // subtle border
-            padding: "12px 16px",
-            borderRadius: "10px",
-          },
-          success: {
-            iconTheme: {
-              primary: "#22c55e", // green-500
-              secondary: "#fff",
-            },
-          },
-          error: {
-            iconTheme: {
-              primary: "#ef4444", // red-500
-              secondary: "#fff",
-            },
-          },
-        }}
-      />
+     
 
       <section className="min-h-screen flex items-center justify-center bg-slate-900 px-6 py-20">
         <div className="bg-slate-800 shadow-2xl rounded-2xl p-8 w-full max-w-md border border-slate-700">
