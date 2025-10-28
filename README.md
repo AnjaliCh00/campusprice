@@ -1,36 +1,218 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🎓 Campus Price - Campus Pricing Platform
 
-## Getting Started
+A modern Next.js application for campus pricing and course management, built with TypeScript, Prisma, and MySQL.
 
-First, run the development server:
+## 🚀 Recent Updates
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+### ✅ Database Integration
+- **Prisma ORM**: Added Prisma with MySQL database support
+- **Database Schema**: Created User and Contact models for campus pricing platform
+- **Environment Configuration**: Set up DATABASE_URL in Prisma schema
+
+### 🔐 Authentication System
+- **JWT Implementation**: Created minimal, secure JWT utility for user authentication
+- **Login Enhancement**: Updated login API to generate and set JWT tokens
+- **Cookie Security**: Implemented secure HTTP-only cookies with proper security settings
+- **Token Management**: 7-day token expiration with automatic cookie handling
+- **Middleware Protection**: Added Next.js middleware for route protection and automatic redirects
+- **Profile API**: Created protected profile endpoint with JWT token verification
+
+### 🛠️ Technical Improvements
+- **Dependencies Added**: jose, bcryptjs, mysql2, @prisma/client, prisma
+- **TypeScript Optimization**: Improved type safety and error handling
+- **Code Organization**: Streamlined JWT utility with minimal, focused functionality
+- **Security Enhancements**: Added proper cookie security and JWT validation
+
+## 🏗️ Project Structure
+
+```
+campusprice/
+├── prisma/
+│   └── schema.prisma          # Database schema
+├── src/
+│   ├── app/
+│   │   ├── api/
+│   │   │   ├── login/        # Authentication endpoints
+│   │   │   ├── signup/
+│   │   │   └── profile/      # Protected profile API
+│   │   ├── dashboard/        # User dashboard
+│   │   ├── login/           # Login page
+│   │   └── signup/          # Registration page
+│   ├── components/          # Reusable UI components
+│   ├── utils/
+│   │   └── jwt.ts          # JWT authentication utility
+│   ├── middleware.ts        # Route protection middleware
+│   └── generated/
+│       └── prisma/         # Generated Prisma client
+├── .env                    # Environment variables
+└── package.json           # Dependencies and scripts
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🚀 Getting Started
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Prerequisites
+- Node.js 18+ 
+- MySQL database
+- npm or yarn
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Installation
 
-## Learn More
+1. **Clone the repository**
+   ```bash
+   git clone <repository-url>
+   cd campusprice
+   ```
 
-To learn more about Next.js, take a look at the following resources:
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+3. **Set up environment variables**
+   Create a `.env` file in the root directory:
+   ```env
+   DATABASE_URL="mysql://username:password@localhost:3306/campusprice"
+   JWT_SECRET="your-super-secret-jwt-key"
+   ```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+4. **Set up the database**
+   ```bash
+   npx prisma generate
+   npx prisma db push
+   ```
 
-## Deploy on Vercel
+5. **Start the development server**
+   ```bash
+   npm run dev
+   ```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+6. **Open your browser**
+   Navigate to [http://localhost:3000](http://localhost:3000)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 🔧 Available Scripts
+
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm run start` - Start production server
+- `npm run lint` - Run ESLint
+
+## 🗄️ Database Commands
+
+- `npx prisma generate` - Generate Prisma client
+- `npx prisma db push` - Push schema to database
+- `npx prisma studio` - Open Prisma Studio
+
+## 🗄️ Database Schema
+
+### User Model
+```prisma
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+```
+
+### Contact Model
+```prisma
+model Contact {
+  id        Int      @id @default(autoincrement())
+  name      String
+  phone     String
+  dob       DateTime
+  college   String
+  course    String
+  skills    String
+  message   String
+  createdAt DateTime @default(now())
+  updatedAT DateTime @updatedAt
+}
+```
+
+## 🔐 Authentication
+
+The application uses JWT-based authentication with secure HTTP-only cookies and middleware protection:
+
+- **Token Creation**: `createToken(user)` - Creates JWT for authenticated user
+- **Token Verification**: `verifyToken(token)` - Verifies and returns user data
+- **Cookie Security**: HTTP-only, secure cookies with 7-day expiration
+- **Middleware Protection**: Automatic route protection and redirects
+- **Protected Routes**: Dashboard requires authentication, login/signup redirect if already authenticated
+- **Profile API**: Protected endpoint that returns user data from JWT token
+
+## 🛡️ Security Features
+
+- **Password Hashing**: bcryptjs for secure password storage
+- **JWT Security**: HS256 algorithm with secure secret
+- **Cookie Security**: HTTP-only, secure, same-site protection
+- **Input Validation**: Server-side validation for all inputs
+- **SQL Injection Protection**: Prisma ORM prevents SQL injection
+
+## 🚀 Deployment
+
+### Environment Variables
+Make sure to set these environment variables in production:
+
+```env
+DATABASE_URL="your-production-database-url"
+JWT_SECRET="your-production-jwt-secret"
+NODE_ENV="production"
+```
+
+### Database Setup
+1. Create production MySQL database
+2. Update DATABASE_URL in environment variables
+3. Run `npx prisma generate && npx prisma db push` to initialize schema
+
+## 📝 API Endpoints
+
+- `POST /api/login` - User authentication (returns JWT token)
+- `POST /api/signup` - User registration  
+- `GET /api/profile` - Get user profile (protected, requires JWT token)
+- `POST /api/price` - Price-related operations
+
+## 🎯 Features
+
+- ✅ User authentication and registration
+- ✅ Secure JWT token management
+- ✅ Route protection with middleware
+- ✅ Automatic redirects based on auth status
+- ✅ Protected profile API endpoint
+- ✅ Responsive dashboard
+- ✅ Course pricing system
+- ✅ Contact form with validation
+- ✅ Database integration with Prisma
+- ✅ TypeScript for type safety
+- ✅ Modern UI with Tailwind CSS
+
+## 🔄 Recent Changes
+
+### v1.1.0 - Authentication & Database Update
+- Added Prisma ORM with MySQL support
+- Implemented JWT authentication system
+- Created secure cookie management
+- Added Next.js middleware for route protection
+- Created protected profile API endpoint
+- Added automatic redirects for auth state
+- Added essential dependencies (jose, bcryptjs, mysql2)
+- Optimized JWT utility for minimal footprint
+- Enhanced security with proper validation
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Test thoroughly
+5. Submit a pull request
+
+## 📄 License
+
+This project is licensed under the MIT License.
+
+## 🆘 Support
+
+For support and questions, please open an issue in the repository or contact the development team.
