@@ -8,6 +8,7 @@ export async function POST(req: Request) {
   try {
     const { name, email, password } = await req.json();
 
+    // ✅ Validate input
     if (!name || !email || !password) {
       return NextResponse.json(
         { error: "All fields are required" },
@@ -15,7 +16,11 @@ export async function POST(req: Request) {
       );
     }
 
-    const existingUser = await prisma.user.findUnique({ where: { email } });
+    // ✅ Check if user already exists
+    const existingUser = await prisma.user.findUnique({
+      where: { email },
+    });
+
     if (existingUser) {
       return NextResponse.json(
         { error: "User already exists" },
@@ -23,10 +28,16 @@ export async function POST(req: Request) {
       );
     }
 
+    // ✅ Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
+    // ✅ Create new user (must match Prisma model)
     const user = await prisma.user.create({
-      data: { name, email, password: hashedPassword },
+      data: {
+        name,
+        email,
+        password: hashedPassword,
+      },
     });
 
     return NextResponse.json(
@@ -34,7 +45,7 @@ export async function POST(req: Request) {
       { status: 201 }
     );
   } catch (error) {
-    console.error("Signup error:", error);
+    console.error("❌ Signup error:", error);
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }
