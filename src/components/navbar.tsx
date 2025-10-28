@@ -53,11 +53,11 @@ const Navbar = () => {
           <li>
             <Link href="/contact">Contact</Link>
           </li>
-          {/* <li>
+          <li>
             <Link href="/login" onClick={() => setMenuOpen(false)}>
               login
             </Link>
-          </li> */}
+          </li>
           <li>
             <Link href="/signup" onClick={() => setMenuOpen(false)}> 
               sign up
@@ -94,9 +94,9 @@ const Navbar = () => {
             <Link href="/contact" onClick={() => setMenuOpen(false)}>
               Contact
             </Link>
-            {/* <Link href="/login" onClick={() => setMenuOpen(false)}>
+            <Link href="/login" onClick={() => setMenuOpen(false)}>
               login
-            </Link> */}
+            </Link>
             <Link href="/signup" onClick={() => setMenuOpen(false)}>
               ign up
             </Link>
