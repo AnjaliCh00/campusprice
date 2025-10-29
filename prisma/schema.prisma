@@ -29,3 +29,11 @@ model User {
   updatedAt DateTime @default(now()) @updatedAt
 }
 
+model Contact {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  message   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
