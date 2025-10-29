@@ -23,12 +23,12 @@ const Signup = () => {
 
   const [loading, setLoading] = useState(false);
 
-  // ✅ Handle input changes
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  // ✅ Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -42,9 +42,7 @@ const Signup = () => {
     try {
       const res = await fetch("/api/signup", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json", // ✅ fixed header
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
       });
 
@@ -56,7 +54,6 @@ const Signup = () => {
         return;
       }
 
-      console.log("Signup successful:", data);
       toast.success("✅ Signup successful!");
     } catch (error) {
       console.error("Error during signup:", error);
@@ -76,9 +73,9 @@ const Signup = () => {
           Join us and start your journey today
         </p>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Name */}
-          <div>
+        <form onSubmit={handleSubmit} className="space-y-5">
+          {/* Full Name */}
+          <div className="space-y-2">
             <Label htmlFor="name" className="text-gray-300">
               Full Name
             </Label>
@@ -95,7 +92,7 @@ const Signup = () => {
           </div>
 
           {/* Email */}
-          <div>
+          <div className="space-y-2">
             <Label htmlFor="email" className="text-gray-300">
               Email Address
             </Label>
@@ -112,7 +109,7 @@ const Signup = () => {
           </div>
 
           {/* Phone */}
-          <div>
+          <div className="space-y-2">
             <Label htmlFor="phone" className="text-gray-300">
               Phone Number
             </Label>
@@ -128,7 +125,7 @@ const Signup = () => {
           </div>
 
           {/* Date of Birth */}
-          <div>
+          <div className="space-y-2">
             <Label htmlFor="dob" className="text-gray-300">
               Date of Birth
             </Label>
@@ -143,7 +140,7 @@ const Signup = () => {
           </div>
 
           {/* College */}
-          <div>
+          <div className="space-y-2">
             <Label htmlFor="college" className="text-gray-300">
               College Name
             </Label>
@@ -159,7 +156,7 @@ const Signup = () => {
           </div>
 
           {/* Course */}
-          <div>
+          <div className="space-y-2">
             <Label htmlFor="course" className="text-gray-300">
               Course
             </Label>
@@ -175,7 +172,7 @@ const Signup = () => {
           </div>
 
           {/* Skills */}
-          <div>
+          <div className="space-y-2">
             <Label htmlFor="skills" className="text-gray-300">
               Skills
             </Label>
@@ -191,7 +188,7 @@ const Signup = () => {
           </div>
 
           {/* Message */}
-          <div>
+          <div className="space-y-2">
             <Label htmlFor="message" className="text-gray-300">
               Message (optional)
             </Label>
@@ -206,7 +203,7 @@ const Signup = () => {
           </div>
 
           {/* Password */}
-          <div>
+          <div className="space-y-2">
             <Label htmlFor="password" className="text-gray-300">
               Password
             </Label>
@@ -223,7 +220,7 @@ const Signup = () => {
           </div>
 
           {/* Confirm Password */}
-          <div>
+          <div className="space-y-2">
             <Label htmlFor="confirmPassword" className="text-gray-300">
               Confirm Password
             </Label>
@@ -239,11 +236,11 @@ const Signup = () => {
             />
           </div>
 
-          {/* Submit */}
+          {/* Submit Button */}
           <Button
             type="submit"
             disabled={loading}
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg"
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg mt-4"
           >
             {loading ? "Creating Account..." : "Sign Up"}
           </Button>
@@ -261,3 +258,4 @@ const Signup = () => {
 };
 
 export default Signup;
+ 
