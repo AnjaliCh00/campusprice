@@ -1,17 +1,17 @@
 import { NextResponse } from "next/server";
-import { PrismaClient } from "@/generated/prisma";
+import { PrismaClient } from "@prisma/client"; // ✅ Use official client
 import bcrypt from "bcryptjs";
 
 const prisma = new PrismaClient();
 
 export async function POST(req: Request) {
   try {
-    const { name, email, password } = await req.json();
+    const { name, email, password, phone, dob, college, course, skills, message } = await req.json();
 
-    // ✅ Validate input
+    // ✅ Validate essential fields
     if (!name || !email || !password) {
       return NextResponse.json(
-        { error: "All fields are required" },
+        { error: "Name, email, and password are required" },
         { status: 400 }
       );
     }
@@ -31,12 +31,18 @@ export async function POST(req: Request) {
     // ✅ Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // ✅ Create new user (must match Prisma model)
+    // ✅ Create user with all fields
     const user = await prisma.user.create({
       data: {
         name,
         email,
         password: hashedPassword,
+        phone: phone || null,
+        dob: dob ? new Date(dob) : null,
+        college: college || null,
+        course: course || null,
+        skills: skills || null,
+        message: message || null,
       },
     });
 

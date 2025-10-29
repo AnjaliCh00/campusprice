@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import {
   Dialog,
   DialogContent,
@@ -12,9 +13,13 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 
+// ✅ Lucide icons
+import { LogOut, Pencil, Lock } from "lucide-react";
+
 const ProfilePage = () => {
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -39,15 +44,27 @@ const ProfilePage = () => {
     fetchUserData();
   }, []);
 
-  // ✅ Handlers
+  // ✅ Logout handler
+  const handleLogout = async () => {
+    try {
+      localStorage.removeItem("user");
+      sessionStorage.removeItem("user");
+      toast.success("Logged out successfully!");
+      router.push("/login");
+    } catch (error) {
+      console.error(error);
+      toast.error("Logout failed!");
+    }
+  };
+
   const handleProfileUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
-    toast.success("✅ Profile updated successfully!");
+    toast.success("Profile updated successfully!");
   };
 
   const handlePasswordChange = async (e: React.FormEvent) => {
     e.preventDefault();
-    toast.success("🔒 Password changed successfully!");
+    toast.success("Password changed successfully!");
   };
 
   if (loading) {
@@ -80,38 +97,40 @@ const ProfilePage = () => {
 
         <div className="space-y-3 text-gray-300">
           <p>
-            <span className="font-semibold text-white">📞 Phone:</span>{" "}
+            <span className="font-semibold text-white">Phone:</span>{" "}
             {user?.phone || "Not provided"}
           </p>
           <p>
-            <span className="font-semibold text-white">🎂 DOB:</span>{" "}
+            <span className="font-semibold text-white">DOB:</span>{" "}
             {user?.dob ? new Date(user.dob).toLocaleDateString() : "Not provided"}
           </p>
           <p>
-            <span className="font-semibold text-white">🏫 College:</span>{" "}
+            <span className="font-semibold text-white">College:</span>{" "}
             {user?.college || "Not provided"}
           </p>
           <p>
-            <span className="font-semibold text-white">🎓 Course:</span>{" "}
+            <span className="font-semibold text-white">Course:</span>{" "}
             {user?.course || "Not provided"}
           </p>
           <p>
-            <span className="font-semibold text-white">💼 Skills:</span>{" "}
+            <span className="font-semibold text-white">Skills:</span>{" "}
             {user?.skills || "Not specified"}
           </p>
         </div>
 
         <div className="mt-8 flex flex-col sm:flex-row gap-4">
-          {/* 🧩 Edit Profile Dialog */}
+          {/* ✏️ Edit Profile Dialog */}
           <Dialog>
             <DialogTrigger asChild>
-              <Button className="flex-1 bg-blue-600 hover:bg-blue-700">
-                ✏️ Edit Profile
+              <Button className="flex-1 bg-blue-600 hover:bg-blue-700 flex items-center justify-center gap-2">
+                <Pencil className="w-4 h-4" /> Edit Profile
               </Button>
             </DialogTrigger>
             <DialogContent className="bg-slate-800 text-white border border-slate-700">
               <DialogHeader>
-                <DialogTitle>✏️ Edit Profile</DialogTitle>
+                <DialogTitle className="flex items-center gap-2">
+                  <Pencil className="w-4 h-4" /> Edit Profile
+                </DialogTitle>
               </DialogHeader>
               <form onSubmit={handleProfileUpdate} className="space-y-4 mt-4">
                 <input
@@ -137,8 +156,11 @@ const ProfilePage = () => {
                   placeholder="Skills"
                   className="w-full p-2 rounded bg-slate-700 text-white"
                 ></textarea>
-                <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700">
-                  💾 Save Changes
+                <Button
+                  type="submit"
+                  className="w-full bg-blue-600 hover:bg-blue-700 flex items-center justify-center gap-2"
+                >
+                  <Pencil className="w-4 h-4" /> Save Changes
                 </Button>
               </form>
             </DialogContent>
@@ -147,13 +169,15 @@ const ProfilePage = () => {
           {/* 🔒 Change Password Dialog */}
           <Dialog>
             <DialogTrigger asChild>
-              <Button className="flex-1 bg-amber-600 hover:bg-amber-700">
-                🔒 Change Password
+              <Button className="flex-1 bg-blue-600 hover:bg-blue-700 flex items-center justify-center gap-2">
+                <Lock className="w-4 h-4" /> Change Password
               </Button>
             </DialogTrigger>
             <DialogContent className="bg-slate-800 text-white border border-slate-700">
               <DialogHeader>
-                <DialogTitle>🔒 Change Password</DialogTitle>
+                <DialogTitle className="flex items-center gap-2">
+                  <Lock className="w-4 h-4" /> Change Password
+                </DialogTitle>
               </DialogHeader>
               <form onSubmit={handlePasswordChange} className="space-y-4 mt-4">
                 <input
@@ -171,12 +195,25 @@ const ProfilePage = () => {
                   placeholder="Confirm New Password"
                   className="w-full p-2 rounded bg-slate-700 text-white"
                 />
-                <Button type="submit" className="w-full bg-amber-600 hover:bg-amber-700">
-                  ✅ Update Password
+                <Button
+                  type="submit"
+                  className="w-full bg-amber-600 hover:bg-amber-700 flex items-center justify-center gap-2"
+                >
+                  <Lock className="w-4 h-4" /> Update Password
                 </Button>
               </form>
             </DialogContent>
           </Dialog>
+        </div>
+
+        {/* 🚪 Logout Button */}
+        <div className="mt-6">
+          <Button
+            onClick={handleLogout}
+            className="w-full bg-blue-600 hover:bg-blue-700   text-white font-semibold flex items-center justify-center gap-2"
+          >
+            <LogOut className="w-4 h-4" /> Logout
+          </Button>
         </div>
       </div>
     </section>
