@@ -23,19 +23,84 @@ const Signup = () => {
 
   const [loading, setLoading] = useState(false);
 
+  // ✅ Handle input changes
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
+  // ✅ Validation function
+  const validateForm = () => {
+    // Name: not empty and not numeric
+    if (!form.name.trim()) {
+      toast.error("⚠️ Name is required.");
+      return false;
+    }
+    if (/^\d+$/.test(form.name.trim())) {
+      toast.error("⚠️ Name cannot be only numbers.");
+      return false;
+    }
+
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(form.email)) {
+      toast.error("⚠️ Please enter a valid email address.");
+      return false;
+    }
+
+    // Phone: at least 10 digits (optional)
+    if (form.phone && !/^\d{10,}$/.test(form.phone)) {
+      toast.error("⚠️ Enter a valid 10-digit phone number.");
+      return false;
+    }
+
+    // DOB (optional but can be checked)
+    if (form.dob && new Date(form.dob) > new Date()) {
+      toast.error("⚠️ Date of birth cannot be in the future.");
+      return false;
+    }
+
+   // Password Validation
+const passwordRegex =
+  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
+
+if (!passwordRegex.test(form.password)) {
+  toast.error(
+    "⚠️ Password must be at least 8 characters, include uppercase, lowercase, number, and special symbol."
+  );
+  return false;
+}
+
+if (form.password !== form.confirmPassword) {
+  toast.error("⚠️ Passwords do not match!");                                             
+  return false;
+}
+
+
+    // College, course, skills (optional but you can enforce)
+    if (!form.college.trim()) {
+      toast.error("⚠️ Please enter your college name.");
+      return false;
+    }
+    if (!form.course.trim()) {
+      toast.error("⚠️ Please enter your course name.");
+      return false;
+    }
+    if (!form.skills.trim()) {
+      toast.error("⚠️ Please mention at least one skill.");
+      return false;
+    }
+
+    return true;
+  };
+
+  // ✅ Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (form.password !== form.confirmPassword) {
-      toast.error("⚠️ Passwords do not match!");
-      return;
-    }
+    if (!validateForm()) return; // 🚨 stop if invalid
 
     setLoading(true);
 
@@ -87,7 +152,6 @@ const Signup = () => {
               value={form.name}
               onChange={handleChange}
               className="bg-slate-700 border-slate-600 text-white placeholder-gray-400"
-              required
             />
           </div>
 
@@ -104,7 +168,6 @@ const Signup = () => {
               value={form.email}
               onChange={handleChange}
               className="bg-slate-700 border-slate-600 text-white placeholder-gray-400"
-              required
             />
           </div>
 
@@ -215,7 +278,6 @@ const Signup = () => {
               value={form.password}
               onChange={handleChange}
               className="bg-slate-700 border-slate-600 text-white placeholder-gray-400"
-              required
             />
           </div>
 
@@ -232,7 +294,6 @@ const Signup = () => {
               value={form.confirmPassword}
               onChange={handleChange}
               className="bg-slate-700 border-slate-600 text-white placeholder-gray-400"
-              required
             />
           </div>
 
@@ -258,4 +319,3 @@ const Signup = () => {
 };
 
 export default Signup;
- 
