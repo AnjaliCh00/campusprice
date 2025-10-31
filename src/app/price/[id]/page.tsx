@@ -3,8 +3,69 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { ChevronDown, ChevronUp } from "lucide-react";
+import { Cashfree, CFEnvironment } from "cashfree-pg";
+import axios from "axios";
+import Script from "next/script";
 
 export default function CoursePage() {
+
+
+
+ const [loading, setLoading] = useState(false);
+
+  const handleClick = async (e: any) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      // ✅ Example customer (in real case, take from signup/profile)
+      const customer = {
+        id: "user_101",
+        name: "Anjali Choudhary",
+        email: "anjali@example.com",
+        phone: "9876543210",
+      };
+
+      // ✅ Create order using backend API
+      const res = await axios.post("/api/buyorder", {
+        amount: 500, // amount in INR
+        customer,
+      });
+
+      const data = res.data;
+
+      if (data?.payment_session_id) {
+        // ✅ Initialize Cashfree Drop Checkout
+        const cashfree = new (window as any).Cashfree({
+          mode: process.env.NEXT_PUBLIC_CASHFREE_MODE,
+        });
+
+        cashfree.checkout({
+          paymentSessionId: data.payment_session_id,
+          redirectTarget: "_self",
+        });
+      } else {
+        alert("❌ Failed to create payment session.");
+      }
+    } catch (error) {
+      console.error("Error initiating payment:", error);
+      alert("Something went wrong during payment!");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+
+
+
+
+
+
+
+
+
+
+
   const params = useParams();
   const [course, setCourse] = useState<any>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -40,6 +101,8 @@ export default function CoursePage() {
     );
   }
 
+
+  
   // -------------------- FEATURES DATA --------------------
   const features = [
     {
@@ -97,9 +160,13 @@ export default function CoursePage() {
     },
   ];
 
+  
   // -------------------- MAIN RETURN --------------------
   return (
     <>
+
+ <Script src="https://sdk.cashfree.com/js/v3/cashfree.js" strategy="afterInteractive" />
+
       {/* Course Header Section */}
       <section className="bg-slate-900 min-h-screen flex flex-col md:flex-row items-start pt-16 md:pt-20 px-6 md:px-12 lg:px-24 gap-12">
         {/* Video Section */}
@@ -173,9 +240,13 @@ export default function CoursePage() {
           </div>
 
           {/* Buy Button */}
-          <button className="mt-2 px-8 py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-lg shadow-lg transition duration-300 w-fit">
-            Buy Now
-          </button>
+           <button
+          onClick={handleClick}
+          disabled={loading}
+          className="bg-blue-600 text-white font-semibold py-2 px-6 rounded-lg shadow-md hover:bg-blue-700 transition-all duration-300 active:scale-95"
+        >
+          {loading ? "Processing..." : "Buy Now"}
+        </button>
         </div>
       </section>
 
