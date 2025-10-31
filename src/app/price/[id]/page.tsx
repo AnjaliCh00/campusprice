@@ -8,11 +8,29 @@ import axios from "axios";
 import Script from "next/script";
 
 export default function CoursePage() {
+  const [loading, setLoading] = useState(false);
 
+  const params = useParams();
+  const [course, setCourse] = useState<any>(null);
+  
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
+  useEffect(() => {
+    const fetchCourse = async () => {
+      try {
+        const res = await fetch("/api/price");
+        const data = await res.json();
+        const found = data.find((c: any) => c.id.toString() === params.id);
+        setCourse(found);
 
- const [loading, setLoading] = useState(false);
-
+        console.log(found);
+        setIsLoading(false);
+      } catch (error) {
+        console.error("Failed to fetch course:", error);
+      }
+    };
+    fetchCourse();
+  }, [params.id]);
   const handleClick = async (e: any) => {
     e.preventDefault();
     setLoading(true);
@@ -28,7 +46,7 @@ export default function CoursePage() {
 
       // ✅ Create order using backend API
       const res = await axios.post("/api/buyorder", {
-        amount: 500, // amount in INR
+        amount: course.discountPrice, // amount in INR
         customer,
       });
 
@@ -54,37 +72,6 @@ export default function CoursePage() {
       setLoading(false);
     }
   };
-
-
-
-
-
-
-
-
-
-
-
-
-  const params = useParams();
-  const [course, setCourse] = useState<any>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-
-  useEffect(() => {
-    const fetchCourse = async () => {
-      try {
-        const res = await fetch("/api/price");
-        const data = await res.json();
-        const found = data.find((c: any) => c.id.toString() === params.id);
-        setCourse(found);
-        setIsLoading(false);
-      } catch (error) {
-        console.error("Failed to fetch course:", error);
-      }
-    };
-    fetchCourse();
-  }, [params.id]);
-
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-screen bg-slate-900">
@@ -101,8 +88,6 @@ export default function CoursePage() {
     );
   }
 
-
-  
   // -------------------- FEATURES DATA --------------------
   const features = [
     {
@@ -115,7 +100,7 @@ export default function CoursePage() {
         DevOps: ["Docker", "CI/CD", "AWS"],
       },
     },
-    { 
+    {
       id: 2,
       title: "UI/UX Design",
 
@@ -160,12 +145,13 @@ export default function CoursePage() {
     },
   ];
 
-  
   // -------------------- MAIN RETURN --------------------
   return (
     <>
-
- <Script src="https://sdk.cashfree.com/js/v3/cashfree.js" strategy="afterInteractive" />
+      <Script
+        src="https://sdk.cashfree.com/js/v3/cashfree.js"
+        strategy="afterInteractive"
+      />
 
       {/* Course Header Section */}
       <section className="bg-slate-900 min-h-screen flex flex-col md:flex-row items-start pt-16 md:pt-20 px-6 md:px-12 lg:px-24 gap-12">
@@ -240,13 +226,13 @@ export default function CoursePage() {
           </div>
 
           {/* Buy Button */}
-           <button
-          onClick={handleClick}
-          disabled={loading}
-          className="bg-blue-600 text-white font-semibold py-2 px-6 rounded-lg shadow-md hover:bg-blue-700 transition-all duration-300 active:scale-95"
-        >
-          {loading ? "Processing..." : "Buy Now"}
-        </button>
+          <button
+            onClick={handleClick}
+            disabled={loading}
+            className="bg-blue-600 text-white font-semibold py-2 px-6 rounded-lg shadow-md hover:bg-blue-700 transition-all duration-300 active:scale-95"
+          >
+            {loading ? "Processing..." : "Buy Now"}
+          </button>
         </div>
       </section>
 

@@ -25,9 +25,32 @@ model User {
   course    String?
   skills    String?
   message    String?
+
+   payments  Payment[]
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 }
+
+
+model Payment {
+  id             Int       @id @default(autoincrement())
+  orderId        String    @unique         // Cashfree order ID
+  paymentId      String?                   // Cashfree payment ID (from verification)
+  amount         Float                     // Payment amount
+  currency       String    @default("INR") // Currency code
+  status         String                    // e.g., "SUCCESS", "PENDING", "FAILED"
+  method         String?                   // e.g., "CARD", "UPI", "NETBANKING"
+  referenceId    String?                   // Optional reference from Cashfree
+  transactionTime DateTime?                // Payment date/time from Cashfree
+
+  // ✅ Relationship with User
+  userId         Int
+  user           User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+}
+
 
 model Contact {
   id        Int      @id @default(autoincrement())

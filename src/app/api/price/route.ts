@@ -75,8 +75,8 @@ export async function GET() {
       name: "Cybersecurity",
       description:
         "Explore network security, ethical hacking, and data protection techniques to safeguard digital systems.",
-      price: 13999,
-      discountPrice: 9999,
+      price: 12999,
+      discountPrice:19999,
       duration: "9 Weeks",
       level: "Beginner",
       language: "English",

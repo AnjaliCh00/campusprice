@@ -1,8 +1,39 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import axios from "axios";
+import { verifyToken } from "@/utils/jwt";
+import { PrismaClient } from "@/generated/prisma";
+const prisma = new PrismaClient();
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
   try {
+    const token = req.cookies.get("token")?.value;
+    if (!token) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    // Verify token
+    const payload = await verifyToken(token);
+    if (!payload) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    // Fetch user data from database
+    const user = await prisma.user.findUnique({
+      where: { id: payload.userId },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        phone: true,
+      },
+    });
+
+    if (!user) {
+      return NextResponse.json({
+        sttus: 404,
+      });
+    }
+
     const { amount, customer } = await req.json();
 
     // 🧾 Create order payload for Cashfree
@@ -12,10 +43,14 @@ export async function POST(req: Request) {
         order_amount: amount,
         order_currency: "INR",
         customer_details: {
-          customer_id: customer.id,
-          customer_name: customer.name,
-          customer_email: customer.email,
-          customer_phone: customer.phone,
+          customer_id: `customer_id-${user.id}`,
+          customer_name: user.name,
+          customer_email: user.email,
+          customer_phone: user.phone,
+        },
+        order_meta: {
+          return_url: `${process.env.NEXT_PUBLIC_BASE_URL}paymentsuccess?order_id={order_id}`,
+          notify_url: `${process.env.NEXT_PUBLIC_BASE_URL}api/payment-webhook`,
         },
       },
       {
@@ -31,7 +66,13 @@ export async function POST(req: Request) {
     // Return Cashfree response (order_id + session_id)
     return NextResponse.json(response.data);
   } catch (error: any) {
-    console.error("Error creating Cashfree order:", error.response?.data || error.message);
-    return NextResponse.json({ error: "Payment order creation failed" }, { status: 500 });
+    console.error(
+      "Error creating Cashfree order:",
+      error.response?.data || error.message
+    );
+    return NextResponse.json(
+      { error: "Payment order creation failed" },
+      { status: 500 }
+    );
   }
 }
