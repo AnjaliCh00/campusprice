@@ -8,35 +8,43 @@ import axios from "axios";
 import Script from "next/script";
 
 export default function CoursePage() {
-  const [loading, setLoading] = useState(false);
-
-  const params = useParams();
   const [course, setCourse] = useState<any>(null);
-  
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState(false);
+  const params = useParams();
 
+  // ✅ Fetch course data
   useEffect(() => {
     const fetchCourse = async () => {
       try {
-        const res = await fetch("/api/price");
+        const res = await fetch("/api/price", { cache: "no-store" });
+
+        if (!res.ok) {
+          const text = await res.text();
+          console.error("❌ API Error:", text);
+          throw new Error("Failed to fetch course data");
+        }
+
         const data = await res.json();
         const found = data.find((c: any) => c.id.toString() === params.id);
-        setCourse(found);
 
-        console.log(found);
-        setIsLoading(false);
+        setCourse(found);
       } catch (error) {
-        console.error("Failed to fetch course:", error);
+        console.error("❌ Failed to fetch course:", error);
+      } finally {
+        setIsLoading(false);
       }
     };
+
     fetchCourse();
   }, [params.id]);
+
+  // ✅ Handle Buy Button
   const handleClick = async (e: any) => {
     e.preventDefault();
     setLoading(true);
 
     try {
-      // ✅ Example customer (in real case, take from signup/profile)
       const customer = {
         id: "user_101",
         name: "Anjali Choudhary",
@@ -44,18 +52,16 @@ export default function CoursePage() {
         phone: "9876543210",
       };
 
-      // ✅ Create order using backend API
       const res = await axios.post("/api/buyorder", {
-        amount: course.discountPrice, // amount in INR
+        amount: course.discountPrice,
         customer,
       });
 
       const data = res.data;
 
       if (data?.payment_session_id) {
-        // ✅ Initialize Cashfree Drop Checkout
         const cashfree = new (window as any).Cashfree({
-          mode: process.env.NEXT_PUBLIC_CASHFREE_MODE,
+          mode: process.env.NEXT_PUBLIC_CASHFREE_MODE || "sandbox",
         });
 
         cashfree.checkout({
@@ -72,28 +78,36 @@ export default function CoursePage() {
       setLoading(false);
     }
   };
+
+  // ✅ Loading UI
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center h-screen bg-slate-900">
-        <div className="w-16 h-16 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
-      </div>
+      <div className="flex items-center justify-center h-screen bg-slate-900 text-white">
+        ⏳ Loading course details...
+      </div> 
     );
   }
 
+  // ✅ If no course found
   if (!course) {
     return (
-      <div className="p-10 text-center text-xl text-white bg-slate-900 min-h-screen">
-        Course not found
+      <div className="flex flex-col items-center justify-center h-screen bg-slate-900 text-white">
+        ❌ Course not found or failed to load.
+        <button
+          onClick={() => window.location.reload()}
+          className="mt-4 bg-blue-600 px-4 py-2 rounded-lg hover:bg-blue-700"
+        >
+          Retry
+        </button>
       </div>
     );
   }
 
-  // -------------------- FEATURES DATA --------------------
+  // -------------------- FEATURES --------------------
   const features = [
     {
       id: 1,
       title: "Full Stack Development",
-
       subtopics: {
         Frontend: ["HTML", "CSS", "JavaScript", "React", "Next.js"],
         Backend: ["Node.js", "Express.js", "MongoDB", "REST APIs"],
@@ -103,7 +117,6 @@ export default function CoursePage() {
     {
       id: 2,
       title: "UI/UX Design",
-
       subtopics: {
         Design: ["Figma", "Adobe XD", "Wireframing", "Prototyping"],
         Research: ["User Testing", "Personas", "Usability Analysis"],
@@ -112,7 +125,6 @@ export default function CoursePage() {
     {
       id: 3,
       title: "Data Science",
-
       subtopics: {
         Tools: ["Python", "Pandas", "NumPy", "Matplotlib"],
         MachineLearning: ["Scikit-learn", "Regression", "Classification"],
@@ -121,7 +133,6 @@ export default function CoursePage() {
     {
       id: 4,
       title: "AI & Machine Learning",
-
       subtopics: {
         Topics: ["Neural Networks", "Deep Learning", "TensorFlow", "PyTorch"],
       },
@@ -129,7 +140,6 @@ export default function CoursePage() {
     {
       id: 5,
       title: "Cybersecurity",
-
       subtopics: {
         Areas: ["Network Security", "Ethical Hacking", "Cryptography"],
       },
@@ -137,7 +147,6 @@ export default function CoursePage() {
     {
       id: 6,
       title: "Cloud Computing",
-
       subtopics: {
         Platforms: ["AWS", "Azure", "Google Cloud"],
         Concepts: ["Serverless", "Containers", "Kubernetes"],
@@ -145,7 +154,6 @@ export default function CoursePage() {
     },
   ];
 
-  // -------------------- MAIN RETURN --------------------
   return (
     <>
       <Script
@@ -153,7 +161,7 @@ export default function CoursePage() {
         strategy="afterInteractive"
       />
 
-      {/* Course Header Section */}
+      {/* ---------- COURSE HEADER ---------- */}
       <section className="bg-slate-900 min-h-screen flex flex-col md:flex-row items-start pt-16 md:pt-20 px-6 md:px-12 lg:px-24 gap-12">
         {/* Video Section */}
         <div className="md:w-1/2 flex justify-center items-start pt-30">
@@ -171,17 +179,14 @@ export default function CoursePage() {
 
         {/* Text Section */}
         <div className="md:w-1/2 flex flex-col justify-start space-y-3">
-          {/* Heading */}
-          <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold text-white leading-tight font-[Poppins]">
+          <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold text-white leading-tight">
             {course.name}
           </h1>
 
-          {/* Description */}
           <p className="text-lg md:text-xl text-gray-300 max-w-xl">
             {course.description}
           </p>
 
-          {/* Price */}
           <div className="flex items-center space-x-4">
             <span className="text-3xl md:text-4xl font-bold text-green-400">
               ₹{course.discountPrice ?? course.price}
@@ -193,19 +198,17 @@ export default function CoursePage() {
             )}
           </div>
 
-          {/* Tags */}
           <div className="flex flex-wrap gap-4">
-            {course.tags?.map((tag: string, idx: number) => (
+            {course.tags?.map((tag: any, idx: number) => (
               <div
                 key={idx}
                 className="flex items-center space-x-2 bg-gray-800/70 p-2 rounded-lg shadow-md"
               >
-                <span className="text-white font-medium">#{tag}</span>
+                <span className="text-white font-medium">#{tag.name || tag}</span>
               </div>
             ))}
           </div>
 
-          {/* Additional Details */}
           <div className="space-y-1 text-gray-200">
             <p>
               <span className="font-semibold text-white">Duration:</span>{" "}
@@ -225,7 +228,6 @@ export default function CoursePage() {
             </p>
           </div>
 
-          {/* Buy Button */}
           <button
             onClick={handleClick}
             disabled={loading}
@@ -236,13 +238,12 @@ export default function CoursePage() {
         </div>
       </section>
 
-      {/* Accordion Section (Styled like FAQ) */}
+      {/* ---------- ACCORDION SECTION ---------- */}
       <section className="bg-slate-900 py-20">
         <div className="container mx-auto px-6 md:px-12 lg:px-24">
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-12 text-center font-[Poppins] leading-tight">
+          <h2 className="text-4xl md:text-5xl font-bold text-white mb-12 text-center">
             Explore Our Courses
           </h2>
-
           <Accordion features={features} />
         </div>
       </section>
@@ -257,7 +258,7 @@ function Accordion({ features }: any) {
 
   const toggleAccordion = (index: number) => {
     setOpenIndex(openIndex === index ? null : index);
-    setOpenSubIndex(null); // close subtopics when switching main accordion
+    setOpenSubIndex(null);
   };
 
   const toggleSubAccordion = (section: string) => {
@@ -266,7 +267,7 @@ function Accordion({ features }: any) {
 
   return (
     <div className="space-y-4">
-      {features.map((feature: any, index: any) => {
+      {features.map((feature: any, index: number) => {
         const isOpen = openIndex === index;
         return (
           <div
@@ -287,9 +288,6 @@ function Accordion({ features }: any) {
 
             {isOpen && (
               <div className="p-4 text-gray-300 border-t border-gray-700">
-                <p className="mb-3 text-sm">{feature.desc}</p>
-
-                {/* Subtopics */}
                 {feature.subtopics &&
                   Object.entries(feature.subtopics).map(([section, topics]) => {
                     const subOpen = openSubIndex === section;

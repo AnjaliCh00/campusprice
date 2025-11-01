@@ -60,3 +60,32 @@ model Contact {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+model Price {
+  id            Int          @id @default(autoincrement())
+  name          String
+  description   String
+  price         Float
+  discountPrice Float
+  duration      String
+  level         String
+  language      String
+  video         String
+  instructorId  Int?
+  instructor    Instructor?  @relation(fields: [instructorId], references: [id])
+  tags          PriceTag[]   @relation("PriceTags")
+  createdAt     DateTime     @default(now())
+}
+
+model Instructor {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  bio       String
+  courses   Price[]
+}
+
+model PriceTag {
+  id     Int     @id @default(autoincrement())
+  name   String  @unique
+  prices Price[] @relation("PriceTags")
+}
